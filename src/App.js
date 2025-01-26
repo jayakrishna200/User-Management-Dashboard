@@ -113,8 +113,14 @@ class App extends Component {
   };
 
   render() {
-    const {  showForm, selectedUser, error } = this.state;
+    const { users, showForm, selectedUser, currentPage, usersPerPage, error } = this.state;
     
+    // Pagination
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+    const totalPages = Math.ceil(users.length / usersPerPage);
+
   
     return (
       <div className="app">
@@ -135,6 +141,19 @@ class App extends Component {
           onClose={this.handleCloseForm}
           onSubmit={this.handleFormSubmit}
         />
+         {totalPages > 1 && (
+            <div className="pagination">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                <button
+                  key={number}
+                  onClick={() => this.handlePageChange(number)}
+                  className={currentPage === number ? 'active' : ''}
+                >
+                  {number}
+                </button>
+              ))}
+            </div>
+          )}
       </div>
     );
   }
