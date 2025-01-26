@@ -55,8 +55,13 @@ class UserForm extends Component {
     });
   };
 
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+  handleChange = (event) => {
+    const { name, value } = event.target;
+    event.target.setCustomValidity('');
+    this.setState({ [name]: value });
+  };
+  handleInvalid = (event) => {
+    event.target.setCustomValidity('This field is required');
   };
 
   render() {
@@ -75,6 +80,8 @@ class UserForm extends Component {
                 name="firstName"
                 value={this.state.firstName}
                 onChange={this.handleChange}
+                onInvalid={this.handleInvalid}
+                required
               />
             </div>
             <div className="form-group">
@@ -84,6 +91,8 @@ class UserForm extends Component {
                 name="lastName"
                 value={this.state.lastName}
                 onChange={this.handleChange}
+                onInvalid={this.handleInvalid}
+                required
               />
             </div>
             <div className="form-group">
@@ -93,6 +102,8 @@ class UserForm extends Component {
                 name="email"
                 value={this.state.email}
                 onChange={this.handleChange}
+                onInvalid={this.handleInvalid}
+                required
               />
             </div>
             <div className="form-group">
@@ -102,6 +113,8 @@ class UserForm extends Component {
                 name="department"
                 value={this.state.department}
                 onChange={this.handleChange}
+                onInvalid={this.handleInvalid}
+                required
               />
             </div>
             <div className="form-actions">
