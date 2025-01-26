@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import ErrorBoundary from './components/ErrorBoundary/index.js';
+import UserList from './components/UserList/index.js';
 import UserForm from './components/UserForm/index.js';
 import './App.css';
 
