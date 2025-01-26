@@ -113,52 +113,29 @@ class App extends Component {
   };
 
   render() {
-    const { users, showForm, selectedUser, currentPage, usersPerPage, error } = this.state;
+    const {  showForm, selectedUser, error } = this.state;
     
-    // Pagination
-    const indexOfLastUser = currentPage * usersPerPage;
-    const indexOfFirstUser = indexOfLastUser - usersPerPage;
-    const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
-    const totalPages = Math.ceil(users.length / usersPerPage);
-
+  
     return (
-      <ErrorBoundary>
-        <div className="app">
-          <header>
-            <h1>User Management System</h1>
-            <button onClick={this.handleAddUser}>Add User</button>
-          </header>
-
-          {error && <div className="error-message">{error}</div>}
-
+      <div className="app">
+        <h1>User Management Dashboard</h1>
+        <ErrorBoundary message={error}>
           <UserList
-            users={currentUsers}
+            users={this.state.users}
             onEdit={this.handleEditUser}
             onDelete={this.handleDeleteUser}
           />
-
-          {totalPages > 1 && (
-            <div className="pagination">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
-                <button
-                  key={number}
-                  onClick={() => this.handlePageChange(number)}
-                  className={currentPage === number ? 'active' : ''}
-                >
-                  {number}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <UserForm
-            show={showForm}
-            user={selectedUser}
-            onSubmit={this.handleFormSubmit}
-            onClose={this.handleCloseForm}
-          />
-        </div>
-      </ErrorBoundary>
+        </ErrorBoundary>
+        <button onClick={this.handleAddUser} className="add-btn">
+          Add User
+        </button>
+        <UserForm
+          show={showForm}
+          user={selectedUser}
+          onClose={this.handleCloseForm}
+          onSubmit={this.handleFormSubmit}
+        />
+      </div>
     );
   }
 }
