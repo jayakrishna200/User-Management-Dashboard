@@ -123,25 +123,22 @@ class App extends Component {
 
   
     return (
-      <div className="app">
-        <h1>User Management Dashboard</h1>
-        <ErrorBoundary message={error}>
+      <ErrorBoundary>
+        <div className="app">
+          <header>
+            <h1>User Management System</h1>
+            <button onClick={this.handleAddUser}>Add User</button>
+          </header>
+
+          {error && <div className="error-message">{error}</div>}
+
           <UserList
-            users={this.state.users}
+            users={currentUsers}
             onEdit={this.handleEditUser}
             onDelete={this.handleDeleteUser}
           />
-        </ErrorBoundary>
-        <button onClick={this.handleAddUser} className="add-btn">
-          Add User
-        </button>
-        <UserForm
-          show={showForm}
-          user={selectedUser}
-          onClose={this.handleCloseForm}
-          onSubmit={this.handleFormSubmit}
-        />
-         {totalPages > 1 && (
+
+          {totalPages > 1 && (
             <div className="pagination">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
                 <button
@@ -154,7 +151,15 @@ class App extends Component {
               ))}
             </div>
           )}
-      </div>
+
+          <UserForm
+            show={showForm}
+            user={selectedUser}
+            onSubmit={this.handleFormSubmit}
+            onClose={this.handleCloseForm}
+          />
+        </div>
+      </ErrorBoundary>
     );
   }
 }
