@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
-import ErrorBoundary from './components/ErrorBoundary/index.js';
-import UserList from './components/UserList/index.js';
-import UserForm from './components/UserForm/index.js';
-import './App.css';
+import React, { Component } from "react";
+import ErrorBoundary from "./components/ErrorBoundary/index.js";
+import UserList from "./components/UserList/index.js";
+import UserForm from "./components/UserForm/index.js";
+import BeatLoader from "react-spinners/BeatLoader";
+
+import "./App.css";
 
 class App extends Component {
   constructor(props) {
@@ -13,7 +15,8 @@ class App extends Component {
       selectedUser: null,
       currentPage: 1,
       usersPerPage: 5,
-      error: null
+      error: null,
+      loading: false,
     };
   }
 
@@ -22,23 +25,26 @@ class App extends Component {
   }
 
   fetchUsers = async () => {
+    this.setState({ loading: true });
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users');
-      if (!response.ok) throw new Error('Failed to fetch users');
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/users"
+      );
+      if (!response.ok) throw new Error("Failed to fetch users");
       const users = await response.json();
-      
+
       // Transform the data to match our schema
-      const transformedUsers = users.map(user => ({
+      const transformedUsers = users.map((user) => ({
         id: user.id,
-        firstName: user.name.split(' ')[0],
-        lastName: user.name.split(' ')[1] || '',
+        firstName: user.name.split(" ")[0],
+        lastName: user.name.split(" ")[1] || "",
         email: user.email,
-        department: 'Engineering' // Default department
+        department: "Engineering", // Default department
       }));
-      
-      this.setState({ users: transformedUsers });
+
+      this.setState({ users: transformedUsers, loading: false });
     } catch (error) {
-      this.setState({ error: error.message });
+      this.setState({ error: error.message, loading: false });
     }
   };
 
@@ -52,13 +58,16 @@ class App extends Component {
 
   handleDeleteUser = async (id) => {
     try {
-      const response = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
-        method: 'DELETE'
-      });
-      if (!response.ok) throw new Error('Failed to delete user');
-      
-      this.setState(prevState => ({
-        users: prevState.users.filter(user => user.id !== id)
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/users/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) throw new Error("Failed to delete user");
+
+      this.setState((prevState) => ({
+        users: prevState.users.filter((user) => user.id !== id),
       }));
     } catch (error) {
       this.setState({ error: error.message });
@@ -68,34 +77,38 @@ class App extends Component {
   handleFormSubmit = async (userData) => {
     try {
       const isEditing = Boolean(userData.id);
-      const url = isEditing 
+      const url = isEditing
         ? `https://jsonplaceholder.typicode.com/users/${userData.id}`
-        : 'https://jsonplaceholder.typicode.com/users';
-      
+        : "https://jsonplaceholder.typicode.com/users";
+
       const response = await fetch(url, {
-        method: isEditing ? 'PUT' : 'POST',
+        method: isEditing ? "PUT" : "POST",
         body: JSON.stringify(userData),
         headers: {
-          'Content-type': 'application/json'
-        }
+          "Content-type": "application/json",
+        },
       });
-      
-      if (!response.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'create'} user`);
-      
-      this.setState(prevState => {
+
+      if (!response.ok)
+        throw new Error(`Failed to ${isEditing ? "update" : "create"} user`);
+
+      this.setState((prevState) => {
         if (isEditing) {
           return {
-            users: prevState.users.map(user => 
+            users: prevState.users.map((user) =>
               user.id === userData.id ? userData : user
             ),
             showForm: false,
-            selectedUser: null
+            selectedUser: null,
           };
         } else {
           return {
-            users: [...prevState.users, { ...userData, id: prevState.users.length + 1 }],
+            users: [
+              ...prevState.users,
+              { ...userData, id: prevState.users.length + 1 },
+            ],
             showForm: false,
-            selectedUser: null
+            selectedUser: null,
           };
         }
       });
@@ -113,23 +126,38 @@ class App extends Component {
   };
 
   render() {
-    const { users, showForm, selectedUser, currentPage, usersPerPage, error } = this.state;
-    
+    const {
+      loading,
+      users,
+      showForm,
+      selectedUser,
+      currentPage,
+      usersPerPage,
+      error,
+    } = this.state;
+
     // Pagination
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
     const totalPages = Math.ceil(users.length / usersPerPage);
 
+    if (loading) {
+      return (
+        <div className="loading-container" >
+          <BeatLoader color='green' />
+        </div>
+      );
+    }
     return (
       <ErrorBoundary>
-        <div className="app">
+        <div className='app'>
           <header>
-            <h1>User Management System</h1>
+            <h1>User Management Dashboard</h1>
             <button onClick={this.handleAddUser}>Add User</button>
           </header>
 
-          {error && <div className="error-message">{error}</div>}
+          {error && <div className='error-message'>{error}</div>}
 
           <UserList
             users={currentUsers}
@@ -138,16 +166,18 @@ class App extends Component {
           />
 
           {totalPages > 1 && (
-            <div className="pagination">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
-                <button
-                  key={number}
-                  onClick={() => this.handlePageChange(number)}
-                  className={currentPage === number ? 'active' : ''}
-                >
-                  {number}
-                </button>
-              ))}
+            <div className='pagination'>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (number) => (
+                  <button
+                    key={number}
+                    onClick={() => this.handlePageChange(number)}
+                    className={currentPage === number ? "active" : ""}
+                  >
+                    {number}
+                  </button>
+                )
+              )}
             </div>
           )}
 
