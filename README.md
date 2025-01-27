@@ -1,4 +1,4 @@
-# User Management System
+# User Management Dashboard
 
 A React-based user management Dashboard that allows us to perform CRUD operations on user data.
 
