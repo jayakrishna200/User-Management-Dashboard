@@ -1,6 +1,6 @@
 # User Management System
 
-A React-based user management system that allows you to perform CRUD operations on user data.
+A React-based user management Dashboard that allows us to perform CRUD operations on user data.
 
 ## Features
 
@@ -13,6 +13,7 @@ A React-based user management system that allows you to perform CRUD operations 
 - Responsive design for all device sizes
 - Error handling
 - Loading states
+- Loading feature for data fetching
 
 ## Project Structure
 
@@ -61,7 +62,5 @@ src/
 1. Add search and filter functionality
 2. Implement sorting for table columns
 3. Add user authentication
-4. Add more form validation rules
-5. Implement real-time updates
-6. Add unit tests
-7. Add loading states for better UX
+4. Implement real-time updates
+5. Add unit tests
